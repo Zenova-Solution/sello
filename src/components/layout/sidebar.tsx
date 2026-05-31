@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -99,7 +100,7 @@ export function Sidebar() {
         )}
       >
         <div className="flex h-9 w-9 items-center justify-center">
-          <img src="/logo.png" alt="Sello" className="h-9 w-9" />
+          <Image src="/logo.png" alt="Sello" width={36} height={36} className="h-9 w-9" />
         </div>
         <AnimatePresence mode="wait">
           {!collapsed && (
