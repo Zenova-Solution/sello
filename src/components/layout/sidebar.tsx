@@ -23,7 +23,7 @@ import {
   ChevronRight,
 } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn, withBasePath } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import {
@@ -79,6 +79,7 @@ const itemVariants = {
 export function Sidebar() {
   const pathname = usePathname()
   const { collapsed, setCollapsed, mobileOpen, setMobileOpen } = useSidebar()
+  const logoSrc = withBasePath("/logo.png")
 
   const isActive = (href: string) => {
     if (href === "/dashboard") return pathname === href
@@ -100,7 +101,7 @@ export function Sidebar() {
         )}
       >
         <div className="flex h-9 w-9 items-center justify-center">
-          <Image src="/logo.png" alt="Sello" width={36} height={36} className="h-9 w-9" />
+          <Image src={logoSrc} alt="Sello" width={36} height={36} className="h-9 w-9" />
         </div>
         <AnimatePresence mode="wait">
           {!collapsed && (

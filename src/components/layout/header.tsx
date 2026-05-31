@@ -13,7 +13,7 @@ import {
   HelpCircle,
 } from "lucide-react"
 
-import { cn } from "@/lib/utils"
+import { cn, withBasePath } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -55,6 +55,7 @@ export function Header() {
   const pathname = usePathname()
   const { setMobileOpen } = useSidebar()
   const [unreadNotifications] = React.useState(3)
+  const avatarSrc = withBasePath("/avatars/default.svg")
 
   const title = getPageTitle(pathname)
 
@@ -129,7 +130,7 @@ export function Header() {
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage
-                  src="/avatars/default.svg"
+                  src={avatarSrc}
                   alt="User avatar"
                 />
                 <AvatarFallback className="text-xs bg-(--primary)/10 text-(--primary)">

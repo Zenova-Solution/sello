@@ -5,6 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function withBasePath(path: string): string {
+  const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ""
+  const normalizedBasePath = rawBasePath === "/" ? "" : rawBasePath.replace(/\/$/, "")
+  if (!normalizedBasePath) return path
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`
+  return `${normalizedBasePath}${normalizedPath}`
+}
+
 export function formatCurrency(amount: number, currency = "USD"): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
