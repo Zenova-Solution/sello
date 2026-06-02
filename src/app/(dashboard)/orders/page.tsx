@@ -78,6 +78,33 @@ const rowVariants = {
   }),
 }
 
+const statusBadgeVariants = {
+  initial: { scale: 0.9, opacity: 0 },
+  animate: {
+    scale: 1,
+    opacity: 1,
+    transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as const },
+  },
+}
+
+const timelineItemVariants = {
+  hidden: { opacity: 0, x: -12 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { delay: i * 0.1, duration: 0.3, ease: "easeOut" as const },
+  }),
+}
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.2 + i * 0.08, duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const },
+  }),
+}
+
 const statusCounts = orders.reduce(
   (acc, o) => {
     acc[o.status] = (acc[o.status] || 0) + 1
@@ -108,17 +135,28 @@ function TimelineEvent({
   timestamp,
   active,
   last,
+  index = 0,
 }: {
   icon: React.ElementType
   label: string
   timestamp: string
   active?: boolean
   last?: boolean
+  index?: number
 }) {
   return (
-    <div className="flex gap-3">
+    <motion.div
+      custom={index}
+      variants={timelineItemVariants}
+      initial="hidden"
+      animate="visible"
+      className="flex gap-3"
+    >
       <div className="flex flex-col items-center">
-        <div
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: index * 0.1 + 0.05, type: "spring", stiffness: 300, damping: 20 }}
           className={cn(
             "flex h-7 w-7 items-center justify-center rounded-full",
             active
@@ -127,7 +165,7 @@ function TimelineEvent({
           )}
         >
           <Icon className="h-3.5 w-3.5" />
-        </div>
+        </motion.div>
         {!last && <div className="mt-1 h-full w-px bg-(--border)" />}
       </div>
       <div className={cn("pb-4", last && "pb-0")}>
@@ -136,7 +174,7 @@ function TimelineEvent({
         </p>
         <p className="text-xs text-(--muted-foreground)">{formatDate(timestamp, "long")}</p>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -159,7 +197,12 @@ function OrderDetailPanel({
     >
       <div className="flex h-full flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-(--border) px-5 py-4">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+          className="flex items-center justify-between border-b border-(--border) px-5 py-4"
+        >
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
@@ -174,16 +217,27 @@ function OrderDetailPanel({
               </p>
             </div>
           </div>
-          <Badge variant={statusConfig[order.status].variant} className="gap-1 text-xs">
-            <StatusIcon className="h-3 w-3" />
-            {statusConfig[order.status].label}
-          </Badge>
-        </div>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.15, type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <Badge variant={statusConfig[order.status].variant} className="gap-1 text-xs">
+              <StatusIcon
+                className={cn(
+                  "h-3 w-3",
+                  order.status === "processing" && "animate-spin"
+                )}
+              />
+              {statusConfig[order.status].label}
+            </Badge>
+          </motion.div>
+        </motion.div>
 
         <ScrollArea className="flex-1">
           <div className="space-y-6 p-5">
             {/* Timeline */}
-            <div>
+            <motion.div custom={0} variants={sectionVariants} initial="hidden" animate="visible">
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
                 Order Timeline
               </h4>
@@ -192,18 +246,21 @@ function OrderDetailPanel({
                 label="Order Placed"
                 timestamp={order.createdAt}
                 active={order.status !== "cancelled"}
+                index={0}
               />
               <TimelineEvent
                 icon={Loader2}
                 label="Processing"
                 timestamp={order.updatedAt}
                 active={order.status === "processing" || order.status === "completed"}
+                index={1}
               />
               <TimelineEvent
                 icon={CheckCircle2}
                 label="Completed"
                 timestamp={order.updatedAt}
                 active={order.status === "completed"}
+                index={2}
               />
               {(order.status === "refunded" || order.status === "cancelled") && (
                 <TimelineEvent
@@ -212,6 +269,7 @@ function OrderDetailPanel({
                   timestamp={order.updatedAt}
                   active
                   last
+                  index={3}
                 />
               )}
               {order.status !== "refunded" && order.status !== "cancelled" && (
@@ -220,21 +278,25 @@ function OrderDetailPanel({
                   label="Delivered"
                   timestamp={order.updatedAt}
                   last
+                  index={3}
                 />
               )}
-            </div>
+            </motion.div>
 
             <Separator />
 
             {/* Line Items */}
-            <div>
+            <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
                 Items ({order.items.length})
               </h4>
               <div className="space-y-2">
                 {order.items.map((item, i) => (
-                  <div
+                  <motion.div
                     key={i}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.05, duration: 0.25 }}
                     className="flex items-center justify-between rounded-(--radius-md) bg-(--muted)/40 px-3 py-2"
                   >
                     <div className="flex items-center gap-3 min-w-0">
@@ -251,15 +313,15 @@ function OrderDetailPanel({
                     <span className="text-sm font-semibold tabular-nums">
                       {formatCurrency(item.totalPrice)}
                     </span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             <Separator />
 
             {/* Payment Breakdown */}
-            <div>
+            <motion.div custom={2} variants={sectionVariants} initial="hidden" animate="visible">
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
                 Payment Details
               </h4>
@@ -281,13 +343,23 @@ function OrderDetailPanel({
                 <Separator />
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold">Total</span>
-                  <span className="text-base font-bold text-(--primary) tabular-nums">
+                  <motion.span
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 15 }}
+                    className="text-base font-bold text-(--primary) tabular-nums"
+                  >
                     {formatCurrency(order.total)}
-                  </span>
+                  </motion.span>
                 </div>
               </div>
 
-              <div className="mt-3 flex items-center gap-2 rounded-(--radius-md) bg-(--muted)/30 px-4 py-2.5">
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55, duration: 0.3 }}
+                className="mt-3 flex items-center gap-2 rounded-(--radius-md) bg-(--muted)/30 px-4 py-2.5"
+              >
                 <div className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--background)">
                   {React.createElement(paymentIcons[order.paymentMethod], {
                     className: "h-4 w-4 text-(--muted-foreground)",
@@ -299,13 +371,13 @@ function OrderDetailPanel({
                   </p>
                   <p className="text-[10px] text-(--muted-foreground)">Payment Method</p>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             <Separator />
 
             {/* Customer Info */}
-            <div>
+            <motion.div custom={3} variants={sectionVariants} initial="hidden" animate="visible">
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
                 Customer
               </h4>
@@ -330,71 +402,88 @@ function OrderDetailPanel({
                   Walk-in Customer
                 </div>
               )}
-            </div>
+            </motion.div>
 
             {order.notes && (
               <>
                 <Separator />
-                <div>
+                <motion.div custom={4} variants={sectionVariants} initial="hidden" animate="visible">
                   <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
                     Notes
                   </h4>
                   <p className="text-sm text-(--muted-foreground)">{order.notes}</p>
-                </div>
+                </motion.div>
               </>
             )}
 
             {order.cashier && (
               <>
                 <Separator />
-                <div>
+                <motion.div custom={5} variants={sectionVariants} initial="hidden" animate="visible">
                   <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
                     Cashier
                   </h4>
                   <p className="text-sm font-medium">{order.cashier}</p>
-                </div>
+                </motion.div>
               </>
             )}
           </div>
         </ScrollArea>
 
         {/* Action Buttons */}
-        <div className="border-t border-(--border) px-5 py-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.3 }}
+          className="border-t border-(--border) px-5 py-4"
+        >
           <div className="flex flex-wrap gap-2">
             {order.status === "pending" && (
-              <Button size="sm" className="gap-1.5 text-xs">
-                <Loader2 className="h-3.5 w-3.5" />
-                Mark as Processing
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button size="sm" className="gap-1.5 text-xs">
+                  <Loader2 className="h-3.5 w-3.5" />
+                  Mark as Processing
+                </Button>
+              </motion.div>
             )}
             {order.status === "processing" && (
-              <Button size="sm" className="gap-1.5 bg-(--success) text-(--primary-foreground) text-xs hover:bg-(--success)/90">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Mark as Completed
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button size="sm" className="gap-1.5 bg-(--success) text-(--primary-foreground) text-xs hover:bg-(--success)/90">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Mark as Completed
+                </Button>
+              </motion.div>
             )}
             {order.status === "completed" && (
-              <Button size="sm" variant="secondary" className="gap-1.5 text-xs">
-                <RotateCcw className="h-3.5 w-3.5" />
-                Refund
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button size="sm" variant="secondary" className="gap-1.5 text-xs">
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  Refund
+                </Button>
+              </motion.div>
             )}
             {(order.status === "pending" || order.status === "processing") && (
-              <Button size="sm" variant="destructive" className="gap-1.5 text-xs">
-                <XCircle className="h-3.5 w-3.5" />
-                Cancel
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button size="sm" variant="destructive" className="gap-1.5 text-xs">
+                  <XCircle className="h-3.5 w-3.5" />
+                  Cancel
+                </Button>
+              </motion.div>
             )}
-            <Button size="sm" variant="outline" className="gap-1.5 text-xs">
-              <Printer className="h-3.5 w-3.5" />
-              Print Receipt
-            </Button>
-            <Button size="sm" variant="outline" className="gap-1.5 text-xs">
-              <Download className="h-3.5 w-3.5" />
-              Download Invoice
-            </Button>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs">
+                <Printer className="h-3.5 w-3.5" />
+                Print Receipt
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs">
+                <Download className="h-3.5 w-3.5" />
+                Download Invoice
+              </Button>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   )
@@ -459,28 +548,37 @@ export default function OrdersPage() {
       {/* Filter Tabs */}
       <div className="mb-4 flex gap-1.5 overflow-x-auto pb-1">
         {statusFilters.map((f) => (
-          <button
+          <motion.button
             key={f.value}
             onClick={() => setStatusFilter(f.value)}
+            whileTap={{ scale: 0.95 }}
             className={cn(
-              "relative flex shrink-0 items-center gap-1.5 rounded-(--radius-md) px-3 py-1.5 text-xs font-medium transition-all whitespace-nowrap",
+              "relative flex shrink-0 items-center gap-1.5 rounded-(--radius-md) px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap",
               statusFilter === f.value
-                ? "bg-(--primary) text-(--primary-foreground) shadow-sm"
+                ? "text-(--primary-foreground)"
                 : "bg-(--muted) text-(--muted-foreground) hover:bg-(--accent) hover:text-(--foreground)"
             )}
           >
-            {f.label}
-            <span
+            {statusFilter === f.value && (
+              <motion.div
+                layoutId="activeFilterTab"
+                className="absolute inset-0 rounded-(--radius-md) bg-(--primary) shadow-sm"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className="relative z-10">{f.label}</span>
+            <motion.span
+              layout
               className={cn(
-                "flex h-4 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-[10px] font-semibold",
+                "relative z-10 flex h-4 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-[10px] font-semibold",
                 statusFilter === f.value
                   ? "bg-(--primary-foreground)/20 text-(--primary-foreground)"
                   : "bg-(--border) text-(--muted-foreground)"
               )}
             >
               {statusCounts[f.value] || 0}
-            </span>
-          </button>
+            </motion.span>
+          </motion.button>
         ))}
       </div>
 
@@ -554,13 +652,24 @@ export default function OrdersPage() {
 
                     {/* Status */}
                     <div className="flex items-center lg:justify-start">
-                      <Badge
-                        variant={statusConfig[order.status].variant}
-                        className="gap-1 text-xs"
+                      <motion.div
+                        variants={statusBadgeVariants}
+                        initial="initial"
+                        animate="animate"
                       >
-                        <StatusIcon className="h-3 w-3" />
-                        {statusConfig[order.status].label}
-                      </Badge>
+                        <Badge
+                          variant={statusConfig[order.status].variant}
+                          className="gap-1 text-xs"
+                        >
+                          <StatusIcon
+                            className={cn(
+                              "h-3 w-3",
+                              order.status === "processing" && "animate-spin"
+                            )}
+                          />
+                          {statusConfig[order.status].label}
+                        </Badge>
+                      </motion.div>
                     </div>
 
                     {/* Customer */}

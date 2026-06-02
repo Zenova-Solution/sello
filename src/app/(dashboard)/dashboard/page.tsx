@@ -15,13 +15,13 @@ import {
   activities,
 } from "@/data/mock-data"
 import { cn, formatCurrency, formatNumber } from "@/lib/utils"
-import { TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { TrendingUp, TrendingDown } from "lucide-react"
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.06 },
+    transition: { staggerChildren: 0.08 },
   },
 }
 
@@ -33,6 +33,14 @@ const sectionVariants = {
     opacity: 1,
     y: 0,
     transition: { duration: 0.5, ease: cubicBezier },
+  },
+}
+
+const staggerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.07, delayChildren: 0.1 },
   },
 }
 
@@ -82,20 +90,21 @@ function DashboardContent() {
             Overview of your business performance and key metrics.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {kpiData.map((kpi, i) => (
-              <div key={kpi.title}>
-                <KpiCard
-                title={kpi.title}
-                value={kpi.value}
-                change={kpi.change}
-                trend={kpi.trend}
-                icon={kpi.icon}
-                index={i}
-              />
-            </div>
-          ))}
-        </div>
+      </motion.div>
+      <motion.div
+        variants={staggerVariants}
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {kpiData.map((kpi) => (
+          <KpiCard
+            key={kpi.title}
+            title={kpi.title}
+            value={kpi.value}
+            change={kpi.change}
+            trend={kpi.trend}
+            icon={kpi.icon}
+          />
+        ))}
       </motion.div>
 
       {/* Revenue Chart + Activity Feed */}

@@ -57,10 +57,18 @@ interface KpiCardProps {
   change: number
   trend: "up" | "down" | "neutral"
   icon: string
-  index?: number
 }
 
-export function KpiCard({ title, value, change, trend, icon, index = 0 }: KpiCardProps) {
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const },
+  },
+}
+
+export function KpiCard({ title, value, change, trend, icon }: KpiCardProps) {
   const Icon = iconMap[icon] || DollarSign
   const numericValue = parseNumericValue(value)
   const animatedValue = useAnimatedCounter(numericValue)
@@ -72,9 +80,7 @@ export function KpiCard({ title, value, change, trend, icon, index = 0 }: KpiCar
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
+      variants={cardVariants}
       whileHover={{ scale: 1.02, y: -2 }}
       className="group relative overflow-hidden rounded-(--radius-lg) border border-(--border) bg-(--card) p-5 shadow-sm transition-shadow duration-300 hover:shadow-md"
     >
