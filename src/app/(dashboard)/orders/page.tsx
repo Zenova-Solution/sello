@@ -160,19 +160,19 @@ function TimelineEvent({
           className={cn(
             "flex h-7 w-7 items-center justify-center rounded-full",
             active
-              ? "bg-(--primary) text-(--primary-foreground)"
-              : "bg-(--muted) text-(--muted-foreground)"
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground"
           )}
         >
           <Icon className="h-3.5 w-3.5" />
         </motion.div>
-        {!last && <div className="mt-1 h-full w-px bg-(--border)" />}
+        {!last && <div className="mt-1 h-full w-px bg-border" />}
       </div>
       <div className={cn("pb-4", last && "pb-0")}>
-        <p className={cn("text-sm font-medium", active && "text-(--foreground)")}>
+        <p className={cn("text-sm font-medium", active && "text-foreground")}>
           {label}
         </p>
-        <p className="text-xs text-(--muted-foreground)">{formatDate(timestamp, "long")}</p>
+        <p className="text-xs text-muted-foreground">{formatDate(timestamp, "long")}</p>
       </div>
     </motion.div>
   )
@@ -193,7 +193,7 @@ function OrderDetailPanel({
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: "100%", opacity: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="fixed inset-y-0 right-0 z-50 w-full border-l border-(--border) bg-(--card) shadow-2xl sm:w-[480px] lg:w-[520px]"
+      className="fixed inset-y-0 right-0 z-50 w-full border-l border-border bg-card shadow-2xl sm:w-120 lg:w-130"
     >
       <div className="flex h-full flex-col">
         {/* Header */}
@@ -201,18 +201,18 @@ function OrderDetailPanel({
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.3 }}
-          className="flex items-center justify-between border-b border-(--border) px-5 py-4"
+          className="flex items-center justify-between border-b border-border px-5 py-4"
         >
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) text-(--muted-foreground) transition-colors hover:bg-(--accent) hover:text-(--foreground)"
+              className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
             <div>
               <h3 className="text-sm font-semibold">{order.orderNumber}</h3>
-              <p className="text-xs text-(--muted-foreground)">
+              <p className="text-xs text-muted-foreground">
                 {formatDate(order.createdAt, "long")}
               </p>
             </div>
@@ -238,7 +238,7 @@ function OrderDetailPanel({
           <div className="space-y-6 p-5">
             {/* Timeline */}
             <motion.div custom={0} variants={sectionVariants} initial="hidden" animate="visible">
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Order Timeline
               </h4>
               <TimelineEvent
@@ -287,7 +287,7 @@ function OrderDetailPanel({
 
             {/* Line Items */}
             <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="visible">
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Items ({order.items.length})
               </h4>
               <div className="space-y-2">
@@ -300,12 +300,12 @@ function OrderDetailPanel({
                     className="flex items-center justify-between rounded-(--radius-md) bg-(--muted)/40 px-3 py-2"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--primary)/10 text-xs font-bold text-(--primary)">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--primary)/10 text-xs font-bold text-primary">
                         {item.productName.charAt(0)}
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">{item.productName}</p>
-                        <p className="text-xs text-(--muted-foreground)">
+                        <p className="text-xs text-muted-foreground">
                           {item.quantity} x {formatCurrency(item.unitPrice)}
                         </p>
                       </div>
@@ -322,22 +322,22 @@ function OrderDetailPanel({
 
             {/* Payment Breakdown */}
             <motion.div custom={2} variants={sectionVariants} initial="hidden" animate="visible">
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Payment Details
               </h4>
               <div className="space-y-1.5 rounded-(--radius-md) bg-(--muted)/30 px-4 py-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-(--muted-foreground)">Subtotal</span>
+                  <span className="text-muted-foreground">Subtotal</span>
                   <span className="tabular-nums">{formatCurrency(order.subtotal)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-(--muted-foreground)">Tax</span>
+                  <span className="text-muted-foreground">Tax</span>
                   <span className="tabular-nums">{formatCurrency(order.tax)}</span>
                 </div>
                 {order.discount > 0 && (
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-(--success)">Discount</span>
-                    <span className="tabular-nums text-(--success)">-{formatCurrency(order.discount)}</span>
+                    <span className="text-success">Discount</span>
+                    <span className="tabular-nums text-success">-{formatCurrency(order.discount)}</span>
                   </div>
                 )}
                 <Separator />
@@ -347,7 +347,7 @@ function OrderDetailPanel({
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 15 }}
-                    className="text-base font-bold text-(--primary) tabular-nums"
+                    className="text-base font-bold text-primary tabular-nums"
                   >
                     {formatCurrency(order.total)}
                   </motion.span>
@@ -360,16 +360,16 @@ function OrderDetailPanel({
                 transition={{ delay: 0.55, duration: 0.3 }}
                 className="mt-3 flex items-center gap-2 rounded-(--radius-md) bg-(--muted)/30 px-4 py-2.5"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--background)">
+                <div className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-background">
                   {React.createElement(paymentIcons[order.paymentMethod], {
-                    className: "h-4 w-4 text-(--muted-foreground)",
+                    className: "h-4 w-4 text-muted-foreground",
                   })}
                 </div>
                 <div>
                   <p className="text-xs font-medium capitalize">
                     {order.paymentMethod.replace("_", " ")}
                   </p>
-                  <p className="text-[10px] text-(--muted-foreground)">Payment Method</p>
+                  <p className="text-[10px] text-muted-foreground">Payment Method</p>
                 </div>
               </motion.div>
             </motion.div>
@@ -378,13 +378,13 @@ function OrderDetailPanel({
 
             {/* Customer Info */}
             <motion.div custom={3} variants={sectionVariants} initial="hidden" animate="visible">
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Customer
               </h4>
               {order.customer ? (
                 <div className="flex items-center gap-3 rounded-(--radius-md) bg-(--muted)/30 px-4 py-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarFallback className="bg-(--primary)/10 text-(--primary) text-xs font-bold">
+                    <AvatarFallback className="bg-(--primary)/10 text-primary text-xs font-bold">
                       {order.customer.name
                         .split(" ")
                         .map((n) => n[0])
@@ -393,11 +393,11 @@ function OrderDetailPanel({
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">{order.customer.name}</p>
-                    <p className="text-xs text-(--muted-foreground)">{order.customer.email}</p>
+                    <p className="text-xs text-muted-foreground">{order.customer.email}</p>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 rounded-(--radius-md) bg-(--muted)/30 px-4 py-3 text-sm text-(--muted-foreground)">
+                <div className="flex items-center gap-2 rounded-(--radius-md) bg-(--muted)/30 px-4 py-3 text-sm text-muted-foreground">
                   <User className="h-4 w-4" />
                   Walk-in Customer
                 </div>
@@ -408,10 +408,10 @@ function OrderDetailPanel({
               <>
                 <Separator />
                 <motion.div custom={4} variants={sectionVariants} initial="hidden" animate="visible">
-                  <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
+                  <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Notes
                   </h4>
-                  <p className="text-sm text-(--muted-foreground)">{order.notes}</p>
+                  <p className="text-sm text-muted-foreground">{order.notes}</p>
                 </motion.div>
               </>
             )}
@@ -420,7 +420,7 @@ function OrderDetailPanel({
               <>
                 <Separator />
                 <motion.div custom={5} variants={sectionVariants} initial="hidden" animate="visible">
-                  <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground)">
+                  <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Cashier
                   </h4>
                   <p className="text-sm font-medium">{order.cashier}</p>
@@ -435,7 +435,7 @@ function OrderDetailPanel({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.3 }}
-          className="border-t border-(--border) px-5 py-4"
+          className="border-t border-border px-5 py-4"
         >
           <div className="flex flex-wrap gap-2">
             {order.status === "pending" && (
@@ -448,7 +448,7 @@ function OrderDetailPanel({
             )}
             {order.status === "processing" && (
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button size="sm" className="gap-1.5 bg-(--success) text-(--primary-foreground) text-xs hover:bg-(--success)/90">
+                <Button size="sm" className="gap-1.5 bg-success text-primary-foreground text-xs hover:bg-(--success)/90">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Mark as Completed
                 </Button>
@@ -529,13 +529,13 @@ export default function OrdersPage() {
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Orders</h1>
-          <p className="text-xs text-(--muted-foreground)">
+          <p className="text-xs text-muted-foreground">
             {filteredOrders.length} of {orders.length} orders
           </p>
         </div>
 
         <div className="relative flex items-center gap-2">
-          <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-(--muted-foreground)" />
+          <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search orders..."
             value={searchQuery}
@@ -555,14 +555,14 @@ export default function OrdersPage() {
             className={cn(
               "relative flex shrink-0 items-center gap-1.5 rounded-(--radius-md) px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap",
               statusFilter === f.value
-                ? "text-(--primary-foreground)"
-                : "bg-(--muted) text-(--muted-foreground) hover:bg-(--accent) hover:text-(--foreground)"
+                ? "text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
             )}
           >
             {statusFilter === f.value && (
               <motion.div
                 layoutId="activeFilterTab"
-                className="absolute inset-0 rounded-(--radius-md) bg-(--primary) shadow-sm"
+                className="absolute inset-0 rounded-(--radius-md) bg-primary shadow-sm"
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
               />
             )}
@@ -570,10 +570,10 @@ export default function OrdersPage() {
             <motion.span
               layout
               className={cn(
-                "relative z-10 flex h-4 min-w-[1.25rem] items-center justify-center rounded-full px-1 text-[10px] font-semibold",
+                "relative z-10 flex h-4 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-semibold",
                 statusFilter === f.value
-                  ? "bg-(--primary-foreground)/20 text-(--primary-foreground)"
-                  : "bg-(--border) text-(--muted-foreground)"
+                  ? "bg-(--primary-foreground)/20 text-primary-foreground"
+                  : "bg-border text-muted-foreground"
               )}
             >
               {statusCounts[f.value] || 0}
@@ -585,7 +585,7 @@ export default function OrdersPage() {
       {/* Orders Table */}
       <Card className="flex flex-1 flex-col overflow-hidden">
         {/* Column Headers */}
-        <div className="hidden border-b border-(--border) px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-(--muted-foreground) lg:grid lg:grid-cols-[1fr_140px_1fr_80px_120px_100px_130px_120px]">
+        <div className="hidden border-b border-border px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground lg:grid lg:grid-cols-[1fr_140px_1fr_80px_120px_100px_130px_120px]">
           <span>Order</span>
           <span>Status</span>
           <span>Customer</span>
@@ -605,20 +605,20 @@ export default function OrdersPage() {
             </div>
           ) : filteredOrders.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
-              <ShoppingBag className="h-14 w-14 text-(--muted-foreground)/30" />
-              <p className="mt-4 text-sm font-medium text-(--muted-foreground)">
+              <ShoppingBag className="h-14 w-14 text-muted-foreground/30" />
+              <p className="mt-4 text-sm font-medium text-muted-foreground">
                 {searchQuery || statusFilter !== "all"
                   ? "No orders match your search"
                   : "No orders yet"}
               </p>
-              <p className="mt-1 text-xs text-(--muted-foreground)/60">
+              <p className="mt-1 text-xs text-muted-foreground/60">
                 {searchQuery || statusFilter !== "all"
                   ? "Try different keywords or filters"
                   : "Orders will appear here once customers start buying"}
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-(--border)">
+            <div className="divide-y divide-border">
               {filteredOrders.map((order, i) => {
                 const StatusIcon = statusConfig[order.status].icon
                 const PaymentIcon = paymentIcons[order.paymentMethod]
@@ -639,12 +639,12 @@ export default function OrdersPage() {
                   >
                     {/* Order Number - visible on all screens */}
                     <div className="flex items-center gap-2">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--primary)/10 text-xs font-bold text-(--primary)">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-(--radius-md) bg-(--primary)/10 text-xs font-bold text-primary">
                         #{order.orderNumber.split("-").pop()}
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium">{order.orderNumber}</p>
-                        <p className="text-xs text-(--muted-foreground) lg:hidden">
+                        <p className="text-xs text-muted-foreground lg:hidden">
                           {formatDate(order.createdAt, "relative")}
                         </p>
                       </div>
@@ -674,7 +674,7 @@ export default function OrdersPage() {
 
                     {/* Customer */}
                     <div className="flex items-center gap-2 min-w-0">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-(--muted) text-xs font-medium text-(--muted-foreground)">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
                         {order.customer
                           ? order.customer.name
                               .split(" ")
@@ -689,7 +689,7 @@ export default function OrdersPage() {
                     </div>
 
                     {/* Items */}
-                    <span className="text-sm tabular-nums text-(--muted-foreground)">
+                    <span className="text-sm tabular-nums text-muted-foreground">
                       {order.items.length}
                     </span>
 
@@ -700,19 +700,19 @@ export default function OrdersPage() {
 
                     {/* Payment */}
                     <div className="flex items-center gap-1.5">
-                      <PaymentIcon className="h-3.5 w-3.5 text-(--muted-foreground)" />
-                      <span className="text-xs capitalize text-(--muted-foreground)">
+                      <PaymentIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-xs capitalize text-muted-foreground">
                         {order.paymentMethod.replace("_", " ")}
                       </span>
                     </div>
 
                     {/* Date */}
-                    <span className="hidden text-sm text-(--muted-foreground) lg:block">
+                    <span className="hidden text-sm text-muted-foreground lg:block">
                       {formatDate(order.createdAt, "relative")}
                     </span>
 
                     {/* Cashier */}
-                    <span className="hidden text-sm text-(--muted-foreground) lg:block">
+                    <span className="hidden text-sm text-muted-foreground lg:block">
                       {order.cashier ?? "—"}
                     </span>
                   </motion.button>

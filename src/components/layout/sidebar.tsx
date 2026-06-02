@@ -89,14 +89,14 @@ export function Sidebar() {
   const sidebarContent = (
     <div
       className={cn(
-        "flex h-full flex-col bg-(--surface) border-r border-(--border)",
+        "flex h-full flex-col bg-surface border-r border-border",
         "transition-colors duration-200"
       )}
     >
       {/* Logo */}
       <div
         className={cn(
-          "flex h-14 items-center border-b border-(--border) shrink-0",
+          "flex h-14 items-center border-b border-border shrink-0",
           collapsed ? "justify-center px-0" : "gap-2 px-5"
         )}
       >
@@ -134,15 +134,15 @@ export function Sidebar() {
                   "group relative flex items-center gap-3.5 rounded-(--radius-md) px-4 py-2.5 text-sm font-medium transition-all duration-200",
                   collapsed && "justify-center px-0",
                   active
-                    ? "bg-(--primary)/10 text-(--primary) dark:bg-(--primary)/15"
-                    : "text-(--muted-foreground) hover:bg-(--accent)/60 hover:text-(--foreground)"
+                    ? "bg-primary/10 text-primary dark:bg-primary/15"
+                    : "text-muted-foreground hover:bg-(--accent)/60 hover:text-foreground"
                 )}
               >
                 {/* Active indicator */}
                 {active && (
                   <motion.span
                     layoutId="activeTab"
-                    className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-(--primary)"
+                    className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-primary"
                     transition={{
                       type: "spring",
                       stiffness: 400,
@@ -152,7 +152,7 @@ export function Sidebar() {
                 )}
                 <Icon
                   className={cn(
-                    "h-[18px] w-[18px] shrink-0",
+                    "h-4.5 w-4.5 shrink-0",
                     "transition-transform duration-200 group-hover:scale-110"
                   )}
                 />
@@ -200,7 +200,7 @@ export function Sidebar() {
       {/* Collapse toggle */}
       <div
         className={cn(
-          "shrink-0 border-t border-(--border) p-3",
+          "shrink-0 border-t border-border p-3",
           collapsed && "flex justify-center"
         )}
       >
@@ -208,7 +208,7 @@ export function Sidebar() {
           variant="ghost"
           size={collapsed ? "icon" : "default"}
           className={cn(
-            "w-full justify-start gap-2.5 text-(--muted-foreground)",
+            "w-full justify-start gap-2.5 text-muted-foreground",
             collapsed && "w-9 justify-center"
           )}
           onClick={() => setCollapsed(!collapsed)}
@@ -235,7 +235,7 @@ export function Sidebar() {
         initial={false}
         className={cn(
           "hidden md:flex h-screen shrink-0 overflow-hidden",
-          "bg-(--surface)",
+          "bg-surface",
           collapsed ? "" : "max-w-xs"
         )}
       >
@@ -259,7 +259,7 @@ export function Sidebar() {
               animate={{ x: 0 }}
               exit={{ x: -280 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-y-0 left-0 z-50 w-[260px] md:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-65 md:hidden"
             >
               <TooltipProvider delayDuration={300}>
                 {sidebarContent}
